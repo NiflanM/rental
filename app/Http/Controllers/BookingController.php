@@ -20,14 +20,14 @@ class BookingController extends Controller
             ->get();
     }
 
-    return view('Bookings.index', compact('bookings'));
+    return view('bookings.index', compact('bookings'));
     }
 
     public function create(Car $car){
         $bookedDates = Booking::where('car_id', $car->id)
         ->whereIn('status', ['approved', 'pending'])
         ->get(['start_date', 'end_date']);
-        return view('Bookings.create', compact('car','bookedDates'));
+        return view('bookings.create', compact('car','bookedDates'));
     }
 
     public function store(Request $request){
@@ -83,7 +83,7 @@ class BookingController extends Controller
 
         $cars = Car::all();
 
-        return view('Bookings.edit', compact('booking', 'cars'));
+        return view('bookings.edit', compact('booking', 'cars'));
     }
     public function update(Request $request, Booking $booking)
 {

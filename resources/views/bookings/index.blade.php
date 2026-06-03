@@ -272,6 +272,206 @@
 
                 </div>
                 @endif
+
+                @php
+
+$today = \Carbon\Carbon::today();
+
+$bookingStart =
+\Carbon\Carbon::parse(
+$booking->start_date
+)->startOfDay();
+
+$daysLeft =
+$today->diffInDays(
+$bookingStart,
+false
+);
+
+@endphp
+
+
+@if(
+auth()->user()->role !== 'admin'
+&&
+!in_array(
+$booking->status,
+['cancelled','rejected']
+)
+)
+
+@if($daysLeft > 0)
+
+<div class="
+flex
+items-center
+justify-between
+gap-4
+rounded-2xl
+bg-gradient-to-r
+from-indigo-50
+to-pink-50
+border
+border-indigo-100
+p-4">
+
+    <!-- Left -->
+
+    <div class="
+    flex
+    items-center
+    gap-4">
+
+        <!-- Days Circle -->
+
+        <div class="
+        w-14
+        h-14
+        rounded-2xl
+        bg-white
+        shadow
+        flex
+        flex-col
+        justify-center
+        items-center">
+
+            <span class="
+            font-bold
+            text-indigo-600
+            text-lg">
+
+                {{ $daysLeft }}
+
+            </span>
+
+            <span class="
+            text-[10px]
+            uppercase
+            text-gray-500">
+
+                Days
+
+            </span>
+
+        </div>
+
+        <!-- Text -->
+
+        <div>
+
+            {{-- <p class="
+            font-semibold
+            text-gray-800">
+
+                Cancellation Available
+
+            </p> --}}
+
+            <p class="
+            text-sm
+            text-gray-600">
+
+                Cancellation Available until
+
+                <span class="font-medium">
+
+                    {{
+                    \Carbon\Carbon::parse(
+                    $booking->start_date
+                    )->subDay()
+                    ->format('M d')
+                    }}
+
+                </span>
+
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Button -->
+
+<form
+action="{{ route(
+'bookings.cancel',
+$booking->id
+) }}"
+method="POST">
+
+@csrf
+@method('PATCH')
+
+<button
+onclick="
+return confirm(
+'Cancel booking?'
+)"
+
+class="
+px-5
+py-3
+rounded-xl
+bg-red-500
+hover:bg-red-600
+text-white
+font-semibold
+transition">
+
+Cancel
+
+</button>
+
+</form>
+
+</div>
+
+
+@else
+
+<div class="
+flex
+items-center
+justify-between
+rounded-2xl
+bg-gray-100
+border
+border-gray-200
+p-4">
+
+<div>
+
+<p class="
+font-semibold
+text-gray-800">
+
+Cancellation Closed
+
+</p>
+
+<p class="
+text-sm
+text-gray-500">
+
+Booking can no longer be cancelled
+
+</p>
+
+</div>
+
+<div class="
+text-2xl">
+
+🔒
+
+</div>
+
+</div>
+
+@endif
+
+@endif
                 <!-- ADMIN ACTION BUTTONS -->
 @if(auth()->user()->role === 'admin')
 
@@ -324,6 +524,14 @@
             Reject
         </button>
     </form>
+    <a href="{{ route('bookings.edit', $booking->id) }}"
+   class="block w-full text-center py-3 rounded-xl
+   bg-indigo-500 hover:bg-indigo-600
+   text-white text-sm font-semibold transition">
+
+   Edit
+
+</a>
 
 </div>
 

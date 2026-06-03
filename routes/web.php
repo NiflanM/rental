@@ -69,4 +69,25 @@ Route::post('/payhere/notify', [PayHereController::class, 'notify'])
 Route::get('/payhere/success', [PayHereController::class, 'success'])
     ->name('payhere.success');
 
+    Route::get('/bookings/{booking}/edit',
+    [BookingController::class, 'edit'])
+    ->name('bookings.edit');
+
+Route::put('/bookings/{booking}',[BookingController::class, 'update'])->name('bookings.update');
+
+Route::patch('/bookings/{booking}/cancel',[BookingController::class,'cancel'])->name('bookings.cancel');
+
+Route::post('/payhere/process',[BookingController::class,'processPayment'])
+->name('payhere.process');
+
+Route::post('/payhere/notify',[BookingController::class,'notify'])
+->name('payhere.notify');
+
+Route::get('/payment/success',[BookingController::class,'success'])
+->name('payment.success');
+
+Route::get('/payment/cancel',[BookingController::class,'cancelPayment'])
+->name('payment.cancel');
 require __DIR__.'/auth.php';
+
+

@@ -11,8 +11,12 @@ class Car extends Model
         'model',
         'year',
         'description',
-        'image',
+        'images',
         'rent',
+        'pickup_address',
         'status',
     ];
+    protected $casts = [
+    'images' => 'array',
+];
 }

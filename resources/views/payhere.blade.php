@@ -51,8 +51,6 @@ value="{{ $hash }}">
 
 </form>
 
-<script>
-
-document.forms[0].submit();
-
-</script>
+<button type="submit">
+Proceed To Payment
+</button>

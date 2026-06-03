@@ -130,7 +130,7 @@ Available
 </div>
 @endif
 
-<form action="{{ route('payhere.process') }}" method="POST" class="space-y-8">
+<form action="{{ route('bookings.store') }}" method="POST" class="space-y-8">
 
 @csrf
 

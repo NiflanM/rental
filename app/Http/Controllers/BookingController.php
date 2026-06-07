@@ -7,21 +7,30 @@ use App\Models\Booking;
 use App\Models\Car;
 class BookingController extends Controller
 {
-    public function index(){
-        $user = auth()->user();
+    public function index()
+{
+    if (!auth()->check()) {
+        return redirect()->route('login');
+    }
 
-        if ($user->role === 'admin'){
-            $bookings = Booking::with(['user', 'car'])->get();
-        }
-         else {
+    $user = auth()->user();
+
+    if ($user->role === 'admin') {
+
+        $bookings = Booking::with(['user','car'])
+            ->latest()
+            ->get();
+
+    } else {
+
         $bookings = Booking::with(['car'])
-            ->where('user_id', $user->id)
+            ->where('user_id',$user->id)
             ->latest()
             ->get();
     }
 
-    return view('bookings.index', compact('bookings'));
-    }
+    return view('bookings.index',compact('bookings'));
+}
 
     public function create(Car $car){
         $bookedDates = Booking::where('car_id', $car->id)
@@ -77,7 +86,7 @@ class BookingController extends Controller
 
     public function edit(Booking $booking)
     {
-        if(auth()->user()->role !== 'admin'){
+        if(!auth()->check() || auth()->user()->role !== 'admin'){
             abort(403);
         }
 
@@ -87,7 +96,7 @@ class BookingController extends Controller
     }
     public function update(Request $request, Booking $booking)
 {
-    if(auth()->user()->role !== 'admin'){
+   if(!auth()->check() || auth()->user()->role !== 'admin'){
         abort(403);
     }
 
@@ -140,7 +149,7 @@ class BookingController extends Controller
     public function updateStatus(Request $request, Booking $booking)
     {
         // ONLY ADMIN
-        if(auth()->user()->role !== 'admin'){
+        if(!auth()->check() || auth()->user()->role !== 'admin'){
             abort(403);
         }
 

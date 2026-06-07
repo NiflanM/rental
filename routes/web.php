@@ -10,18 +10,15 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PayHereController;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
+Route::middleware('guest')->group(function () {
+    Route::get('/', [HomeController::class, 'welcome'])->name('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+/*
+|--------------------------------------------------------------------------
+| Redirect Dashboard to Cars Fleet
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -69,14 +66,22 @@ Route::post('/payhere/notify', [PayHereController::class, 'notify'])
 Route::get('/payhere/success', [PayHereController::class, 'success'])
     ->name('payhere.success');
 
-    Route::get('/bookings/{booking}/edit',
-    [BookingController::class, 'edit'])
-    ->name('bookings.edit');
+ Route::get('/bookings', [BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings/create/{car}', [BookingController::class, 'create'])->name('bookings.create');
+    Route::post('/bookings', [BookingController::class, 'store'])->name('bookings.store');
+    Route::delete('/bookings/{id}', [BookingController::class, 'destroy'])->name('bookings.destroy');
+    Route::get('/bookings/{booking}/edit', [BookingController::class, 'edit'])->name('bookings.edit');
+    Route::put('/bookings/{booking}', [BookingController::class, 'update'])->name('bookings.update');
+    
+    // Status, Cancellations and Reviews
+    Route::patch('/bookings/{booking}/status', [BookingController::class, 'updateStatus'])->name('bookings.status');
+    Route::patch('/bookings/{booking}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::patch('/bookings/{booking}/review', [BookingController::class, 'submitReview'])->name('bookings.review');
 
-Route::put('/bookings/{booking}',[BookingController::class, 'update'])->name('bookings.update');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::patch('/bookings/{booking}/cancel',[BookingController::class,'cancel'])->name('bookings.cancel');
-
-require __DIR__.'/auth.php';
+// Your existing car resource or individual routing remains below...
+Route::get('/cars', [CarController::class, 'index'])->name('cars.index');
+    require __DIR__.'/auth.php';
 
 

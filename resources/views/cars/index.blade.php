@@ -7,7 +7,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght=400;600;700;800&family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         body{
@@ -75,7 +75,7 @@
             <a href="{{ route('cars.index') }}" class="btn px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-pink-500 text-white font-semibold shadow-xl hover:shadow-2xl">Vehicles</a>
             <a href="{{ route('bookings.index') }}" class="btn px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-pink-500 text-white font-semibold shadow-xl hover:shadow-2xl">My Bookings</a>
 
-            @if(auth()->user()->role === 'admin')
+            @if(auth()->check() && auth()->user()->role === 'admin')
                 <a href="{{ route('cars.create') }}" class="btn px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-pink-500 text-white font-semibold shadow-xl hover:shadow-2xl">+ Add Vehicle</a>
                 <a href="{{ route('dashboard') }}" class="btn px-5 py-3 rounded-2xl bg-gray-900 text-white font-semibold shadow-xl hover:bg-gray-800 transition">Dashboard</a>
             @endif
@@ -83,7 +83,11 @@
             <div class="relative group">
                 <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/60 hover:bg-white/90 shadow transition">
                     <div class="w-9 h-9 rounded-full bg-gradient-to-r from-indigo-500 to-pink-500 flex items-center justify-center text-white font-bold">
-                        {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+                        @if(auth()->check())
+<div class="w-9 h-9 rounded-full bg-gradient-to-r from-indigo-500 to-pink-500 flex items-center justify-center text-white font-bold">
+    {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+</div>
+@endif
                     </div>
                 </a>
 
@@ -141,119 +145,126 @@
 
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-10">
     @forelse($cars as $car)
-        <div class="car-card bg-white rounded-3xl shadow-md hover:shadow-2xl transition-all duration-500 overflow-hidden group">
+        <div class="car-card bg-white/70 backdrop-blur-md rounded-[2.25rem] border border-white/60 shadow-lg hover:shadow-2xl overflow-hidden flex flex-col justify-between">
             
-            <div class="relative overflow-hidden group/slider h-60 w-full bg-gray-100" id="slider-{{ $car->id }}">
-                <div class="flex h-full w-full transition-transform duration-500 ease-out" id="track-{{ $car->id }}">
-                    @if(!empty($car->images) && is_array($car->images))
-                        @foreach($car->images as $img)
-                            <div class="w-full h-full flex-shrink-0">
-                                <img src="{{ asset('storage/' . $img) }}" class="h-full w-full object-cover">
+            <div>
+                <div class="relative overflow-hidden group/slider h-64 w-full bg-slate-100 border-b border-slate-100" id="slider-{{ $car->id }}">
+                    <div class="flex h-full w-full transition-transform duration-500 ease-out" id="track-{{ $car->id }}">
+                        @if(!empty($car->images) && is_array($car->images))
+                            @foreach($car->images as $img)
+                                <div class="w-full h-full flex-shrink-0">
+                                    <img src="{{ asset('storage/' . $img) }}" class="h-full w-full object-cover transform scale-100 group-hover/slider:scale-105 transition duration-700">
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="w-full h-full flex flex-col items-center justify-center bg-slate-100 text-slate-400 gap-1.5">
+                                <span class="text-2xl">🚗</span>
+                                <span class="text-xs font-semibold tracking-wider uppercase opacity-60">No Media Files</span>
                             </div>
-                        @endforeach
-                    @else
-                        <div class="w-full h-full flex items-center justify-center bg-gray-200">
-                            <span class="text-gray-400 text-sm">🚗 No Images Available</span>
+                        @endif
+                    </div>
+
+                    @if(!empty($car->images) && count($car->images) > 1)
+                        <button onclick="moveSlider('{{ $car->id }}', -1)" class="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 backdrop-blur shadow-md flex items-center justify-center text-gray-800 text-xs font-bold opacity-0 group-hover/slider:opacity-100 transition-all duration-300 hover:bg-white z-20">
+                            &larr;
+                        </button>
+                        <button onclick="moveSlider('{{ $car->id }}', 1)" class="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/80 backdrop-blur shadow-md flex items-center justify-center text-gray-800 text-xs font-bold opacity-0 group-hover/slider:opacity-100 transition-all duration-300 hover:bg-white z-20">
+                            &rarr;
+                        </button>
+
+                        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20 bg-black/10 px-2.5 py-1.5 rounded-full backdrop-blur-md">
+                            @foreach($car->images as $index => $img)
+                                <span id="dot-{{ $car->id }}-{{ $index }}" class="w-1.5 h-1.5 rounded-full transition-all duration-300 {{ $index === 0 ? 'bg-white scale-125' : 'bg-white/40' }}"></span>
+                            @endforeach
                         </div>
                     @endif
+
+                    <div class="absolute top-4 right-4 left-4 flex items-center justify-between z-30 pointer-events-none">
+                        <div class="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-sm text-xs font-semibold tracking-wide pointer-events-auto border border-white/40">
+                            <span class="flex items-center gap-2 {{ $car->status === 'available' ? 'text-emerald-600' : 'text-rose-600' }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $car->status === 'available' ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500' }}"></span>
+                                {{ ucfirst($car->status ?? 'available') }}
+                            </span>
+                        </div>
+
+                        @if(auth()->check() && auth()->user()->role === 'admin')
+                        <div class="relative group/menu pointer-events-auto">
+                            <button class="bg-white/90 backdrop-blur-md w-9 h-9 rounded-xl shadow-sm flex items-center justify-center text-gray-700 hover:bg-white border border-white/40 font-bold transition">⋮</button>
+                            <div class="absolute right-0 mt-2 w-48 opacity-0 invisible group-hover/menu:opacity-100 group-hover/menu:visible transition-all duration-200 z-30">
+                                <div class="bg-white/90 backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden border border-slate-100 p-1">
+                                    <form action="{{ route('cars.status', $car->id) }}" method="POST">
+                                        @csrf @method('PATCH')
+                                        <input type="hidden" name="status" value="available">
+                                        <button class="w-full text-left px-4 py-2.5 text-sm font-medium rounded-xl hover:bg-emerald-50 text-emerald-600 transition">Make Available</button>
+                                    </form>
+                                    <form action="{{ route('cars.status', $car->id) }}" method="POST">
+                                        @csrf @method('PATCH')
+                                        <input type="hidden" name="status" value="disabled">
+                                        <button class="w-full text-left px-4 py-2.5 text-sm font-medium rounded-xl hover:bg-rose-50 text-rose-600 transition">Disable Vehicle</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
                 </div>
 
-                @if(!empty($car->images) && count($car->images) > 1)
-                    <button onclick="moveSlider('{{ $car->id }}', -1)" class="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 backdrop-blur shadow flex items-center justify-center text-gray-800 font-bold opacity-0 group-hover/slider:opacity-100 transition-opacity duration-300 hover:bg-white z-20">
-                        &larr;
-                    </button>
-                    <button onclick="moveSlider('{{ $car->id }}', 1)" class="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 backdrop-blur shadow flex items-center justify-center text-gray-800 font-bold opacity-0 group-hover/slider:opacity-100 transition-opacity duration-300 hover:bg-white z-20">
-                        &rarr;
-                    </button>
-
-                    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
-                        @foreach($car->images as $index => $img)
-                            <span id="dot-{{ $car->id }}-{{ $index }}" class="w-1.5 h-1.5 rounded-full transition-all duration-300 {{ $index === 0 ? 'bg-white scale-125' : 'bg-white/50' }}"></span>
-                        @endforeach
-                    </div>
-                @endif
-
-                <div class="absolute top-4 right-4 left-4 flex items-center justify-between z-30 pointer-events-none">
-                    <div class="bg-white/90 backdrop-blur px-3 py-1 rounded-full shadow text-sm pointer-events-auto">
-                        <span class="flex items-center gap-2 font-medium {{ $car->status === 'available' ? 'text-green-600' : 'text-red-600' }}">
-                            <span class="w-2 h-2 rounded-full animate-pulse {{ $car->status === 'available' ? 'bg-green-500' : 'bg-red-500' }}"></span>
-                            {{ ucfirst($car->status ?? 'available') }}
-                        </span>
-                    </div>
-
-                    @if(auth()->user()->role === 'admin')
-                    <div class="relative group/menu pointer-events-auto">
-                        <button class="bg-white/90 backdrop-blur w-10 h-10 rounded-full shadow flex items-center justify-center hover:bg-white transition">⋮</button>
-                        <div class="absolute right-0 mt-2 w-48 opacity-0 invisible group-hover/menu:opacity-100 group-hover/menu:visible transition-all duration-200">
-                            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border">
-                                <form action="{{ route('cars.status', $car->id) }}" method="POST">
-                                    @csrf @method('PATCH')
-                                    <input type="hidden" name="status" value="available">
-                                    <button class="w-full text-left px-4 py-3 text-sm hover:bg-green-50 text-green-600">✅ Make Available</button>
-                                </form>
-                                <form action="{{ route('cars.status', $car->id) }}" method="POST">
-                                    @csrf @method('PATCH')
-                                    <input type="hidden" name="status" value="disabled">
-                                    <button class="w-full text-left px-4 py-3 text-sm hover:bg-red-50 text-red-600">🚫 Disable Vehicle</button>
-                                </form>
-                            </div>
+                <div class="p-6 space-y-5">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 tracking-tight truncate">{{ $car->name }}</h2>
+                        <p class="text-xs font-semibold uppercase text-indigo-500 tracking-widest mt-0.5">{{ $car->model }}</p>
+                        
+                        <div class="mt-4 flex items-center gap-2 text-xs font-medium text-gray-500 bg-slate-50 border border-slate-100 px-3 py-2 rounded-xl">
+                            <span class="text-base flex-shrink-0">📍</span>
+                            <span class="truncate">
+                                <strong>Pickup:</strong> {{ $car->pickup_address ?? 'Yard unassigned' }}
+                            </span>
                         </div>
                     </div>
-                    @endif
+
+                    <div class="grid grid-cols-2 gap-3 text-xs">
+                        <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex flex-col justify-center">
+                            <p class="text-gray-400 font-medium">Production Year</p>
+                            <p class="font-bold text-gray-800 mt-0.5">{{ $car->year }}</p>
+                        </div>
+                        <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 flex flex-col justify-center">
+                            <p class="text-gray-400 font-medium">Classification</p>
+                            <p class="font-bold text-gray-800 mt-0.5">Premium Fleet</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-indigo-50/70 to-pink-50/70 border border-indigo-100/40 rounded-2xl p-4 flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-gray-400">Daily Hold Rate</p>
+                            <h3 class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-pink-600 tracking-tight mt-0.5">LKR {{ number_format($car->rent) }}</h3>
+                        </div>
+                        <div class="text-slate-400 text-xs font-bold uppercase tracking-wider">/ day</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="p-6 space-y-6">
-                <div>
-                    <h2 class="text-xl font-semibold text-gray-800">{{ $car->name }}</h2>
-                    <p class="text-gray-500 text-sm">{{ $car->model }}</p>
-                    
-                    <div class="mt-3 flex items-center gap-2 text-sm text-gray-600">
-                        <span>📍</span>
-                        <span class="truncate">
-                            <strong>Pickup:</strong> {{ $car->pickup_address ?? 'Address unassigned' }}
-                        </span>
-                    </div>
-                </div>
+            <div class="p-6 pt-0 flex gap-2.5">
+                @if(($car->status ?? 'available') === 'available')
+                    <a href="{{ route('bookings.create',$car->id) }}" class="flex-1 text-center py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-pink-500 text-white font-bold text-xs tracking-wider uppercase shadow-md hover:shadow-lg hover:brightness-105 transition-all duration-300">Book Now</a>
+                @else
+                    <button disabled class="flex-1 py-3.5 rounded-xl bg-slate-100 text-slate-400 text-xs font-bold tracking-wider uppercase border border-slate-200/50 cursor-not-allowed">Vehicle Disabled</button>
+                @endif
 
-                <div class="bg-gradient-to-r from-indigo-50 to-pink-50 rounded-2xl p-5 flex items-center justify-between">
-                    <div>
-                        <p class="text-sm text-gray-500">Daily Rent</p>
-                        <h3 class="text-2xl font-medium text-gray-900">LKR {{ number_format($car->rent) }}</h3>
-                    </div>
-                    <div class="text-indigo-500 text-sm font-medium">/ day</div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 text-sm">
-                    <div class="bg-gray-50 rounded-xl p-4 text-center">
-                        <p class="text-gray-400">Year</p>
-                        <p class="font-medium text-gray-800 mt-1">{{ $car->year }}</p>
-                    </div>
-                    <div class="bg-gray-50 rounded-xl p-4 text-center">
-                        <p class="text-gray-400">Type</p>
-                        <p class="font-medium text-gray-800 mt-1">Luxury</p>
-                    </div>
-                </div>
-
-                <div class="flex gap-3 pt-2">
-                    @if(($car->status ?? 'available') === 'available')
-                        <a href="{{ route('bookings.create',$car->id) }}" class="flex-1 text-center py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold hover:scale-[1.03] transition">Book Now</a>
-                    @else
-                        <button disabled class="flex-1 py-3 rounded-xl bg-gray-300 text-gray-500 cursor-not-allowed">Vehicle Disabled</button>
-                    @endif
-
-                    @if(auth()->user()->role === 'admin')
-                        <a href="{{ route('cars.edit',$car->id) }}" class="px-4 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 transition">✏️</a>
-                        <form action="{{ route('cars.destroy',$car->id) }}" method="POST">
-                            @csrf @method('DELETE')
-                            <button onclick="return confirm('Delete this vehicle?')" class="px-4 py-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-600 transition">🗑️</button>
-                        </form>
-                    @endif
-                </div>
+                @if(auth()->check() && auth()->user()->role === 'admin')
+                    <a href="{{ route('cars.edit',$car->id) }}" class="w-12 h-11 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/60 flex items-center justify-center transition duration-200" title="Edit Vehicle">
+                        <span class="text-sm">✏️</span>
+                    </a>
+                    <form action="{{ route('cars.destroy',$car->id) }}" method="POST" class="inline-block">
+                        @csrf @method('DELETE')
+                        <button onclick="return confirm('Delete this vehicle?')" class="w-12 h-11 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200/40 flex items-center justify-center text-rose-600 transition duration-200" title="Remove Vehicle">
+                            <span class="text-sm">🗑️</span>
+                        </button>
+                    </form>
+                @endif
             </div>
         </div>
     @empty
-        <div class="col-span-full text-center py-20">
+        <div class="col-span-full text-center py-20 bg-white/50 backdrop-blur rounded-[2rem] border border-white/60">
             <div class="text-6xl mb-4">🚗</div>
             <h2 class="text-3xl font-semibold text-gray-800">No Vehicles Found</h2>
             <p class="text-gray-500 mt-3">Add your first vehicle to begin</p>
@@ -292,11 +303,11 @@
         if (!dot) return;
         
         if (isActive) {
-            dot.classList.remove('bg-white/50');
+            dot.classList.remove('bg-white/40');
             dot.classList.add('bg-white', 'scale-125');
         } else {
             dot.classList.remove('bg-white', 'scale-125');
-            dot.classList.add('bg-white/50');
+            dot.classList.add('bg-white/40');
         }
     }
 </script>

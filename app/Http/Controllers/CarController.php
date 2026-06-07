@@ -8,10 +8,43 @@ use Illuminate\Support\Facades\Storage;
 
 class CarController extends Controller
 {
-    public function index(){
-        $cars = Car::all();
-        return view('cars.index', compact('cars'));
+    public function index(Request $request)
+{
+    // 1. Start with cars that are explicitly marked as available
+    $query = Car::where('status', 'available');
+
+    // 2. Filter strictly by location if provided
+    if ($request->filled('location')) {
+        $query->where('pickup_address', 'LIKE', '%' . $request->location . '%');
     }
+
+    // 3. Exclude cars that have an overlapping booking during these dates
+    if ($request->filled('pickup_date') && $request->filled('dropoff_date')) {
+        $pickupDate = $request->pickup_date;
+        $dropoffDate = $request->dropoff_date;
+
+        $query->whereNotExists(function ($subQuery) use ($pickupDate, $dropoffDate) {
+            $subQuery->from('bookings')
+                ->whereRaw('bookings.car_id = cars.id')
+                // Only consider active reservation blocks (ignore cancelled/rejected ones)
+                ->whereIn('bookings.status', ['approved', 'pending']) 
+                ->where(function ($q) use ($pickupDate, $dropoffDate) {
+                    // FIXED: Changed pickup_date/dropoff_date to start_date/end_date to match your table schema
+                    $q->whereBetween('start_date', [$pickupDate, $dropoffDate])
+                      ->orWhereBetween('end_date', [$pickupDate, $dropoffDate])
+                      ->orWhere(function ($inner) use ($pickupDate, $dropoffDate) {
+                          $inner->where('start_date', '<=', $pickupDate)
+                                ->where('end_date', '>=', $dropoffDate);
+                      });
+                });
+        });
+    }
+
+    // 4. Retrieve your clean, filtered fleet
+    $cars = $query->get();
+
+    return view('cars.index', compact('cars'));
+}
 
     public function create(){
         return view('cars.create');

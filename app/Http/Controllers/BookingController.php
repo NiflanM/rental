@@ -186,134 +186,24 @@ class BookingController extends Controller
         'Booking cancelled successfully.'
     );
 }
-public function processPayment(Request $request)
+public function submitReview(Request $request, Booking $booking)
 {
+    // Ensure only the user who booked it can review it
+    if (auth()->id() !== $booking->user_id) {
+        abort(403);
+    }
 
-$data = $request->validate([
+    $request->validate([
+        'rating' => 'required|integer|min:1|max:5',
+        'feedback' => 'nullable|string|max:1000'
+    ]);
 
-'car_id'=>'required',
+    $booking->update([
+        'rating' => $request->rating,
+        'feedback' => $request->feedback,
+        'is_reviewed' => true
+    ]);
 
-'customer_name'=>'required',
-
-'email'=>'required',
-
-'phone'=>'required',
-
-'start_date'=>'required',
-
-'end_date'=>'required'
-
-]);
-
-$car = Car::findOrFail($request->car_id);
-
-$days =
-\Carbon\Carbon::parse($request->start_date)
-->diffInDays($request->end_date)+1;
-
-$total = $days * $car->rent;
-
-$orderId = uniqid();
-
-session([
-'bookingData'=>[
-...$data,
-'user_id'=>auth()->id(),
-'total_days'=>$days,
-'total_price'=>$total,
-'order_id'=>$orderId
-]
-]);
-
-$merchant_id = env('PAYHERE_MERCHANT_ID');
-
-$merchant_secret = env('PAYHERE_SECRET');
-
-$amount = number_format($total,2,'.','');
-
-$currency="LKR";
-
-$hash=strtoupper(
-
-md5(
-
-$merchant_id .
-$orderId .
-$amount .
-$currency .
-strtoupper(md5($merchant_secret))
-
-)
-
-);
-
-return view(
-'payhere',
-compact(
-'merchant_id',
-'orderId',
-'amount',
-'hash',
-'currency',
-'request'
-)
-
-);
-
-}
-public function success()
-{
-
-$data=session('bookingData');
-
-if(!$data){
-
-return redirect('/')
-->with('error','No payment');
-
-}
-
-Booking::create([
-
-...$data,
-
-'status'=>'pending'
-
-]);
-
-session()->forget(
-'bookingData'
-);
-
-return redirect()
-->route('bookings.index')
-->with(
-'success',
-'Payment successful'
-);
-
-}
-public function cancelPayment()
-{
-
-return redirect()
-->route('bookings.index')
-->with(
-'error',
-'Payment cancelled'
-);
-
-}
-public function notify(Request $request)
-{
-
-\Log::info(
-$request->all()
-);
-
-return response(
-"OK"
-);
-
+    return back()->with('success', 'Thank you for your rating and feedback!');
 }
 }

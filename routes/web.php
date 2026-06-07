@@ -81,7 +81,7 @@ Route::get('/payhere/success', [PayHereController::class, 'success'])
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Your existing car resource or individual routing remains below...
-Route::get('/cars', [CarController::class, 'index'])->name('cars.index');
+
     require __DIR__.'/auth.php';
 
 

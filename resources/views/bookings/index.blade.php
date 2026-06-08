@@ -63,7 +63,7 @@
 
             <div class="relative group">
                 <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl bg-white border border-slate-200/80 shadow-sm transition">
-                    <div class="w-7 h-7 rounded-lg bg-gradient-to-r from-indigo-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                    <div class="w-7 h-7 rounded-lg bg-gradient-to-r from-indigo-50 to-pink-50 flex items-center justify-center text-white text-xs font-bold">
                         @if(auth()->check())
                             {{ strtoupper(substr(auth()->user()->name,0,1)) }}
                         @else
@@ -117,8 +117,22 @@
             
             <div>
                 <div class="relative overflow-hidden">
-                    <img src="{{ asset('storage/' . $booking->car->image) }}"
-                         class="h-60 w-full object-cover group-hover:scale-105 transition duration-700">
+                    
+                    @php
+                        $carImages = $booking->car->images;
+                        if (is_string($carImages)) {
+                            $carImages = json_decode($carImages, true);
+                        }
+                    @endphp
+
+                    @if(!empty($carImages) && is_array($carImages) && isset($carImages[0]))
+                        <img src="{{ asset('storage/' . $carImages[0]) }}"
+                             class="h-60 w-full object-cover group-hover:scale-105 transition duration-700">
+                    @else
+                        <div class="h-60 w-full bg-slate-100 flex items-center justify-center text-slate-400 font-medium">
+                            🚗 No Image Available
+                        </div>
+                    @endif
 
                     <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full shadow text-sm">
                         @php
@@ -137,9 +151,7 @@
                                 'rejected' => 'bg-red-500',
                                 'cancelled' => 'bg-gray-400',
                             ];
-                        @endphp
-
-                        <span class="flex items-center gap-2 font-medium {{ $statusColors[$booking->status] ?? 'text-gray-600' }}">
+                        @endphp <span class="flex items-center gap-2 font-medium {{ $statusColors[$booking->status] ?? 'text-gray-600' }}">
                             <span class="w-2 h-2 rounded-full {{ $booking->status !== 'cancelled' ? 'animate-pulse' : '' }} {{ $statusDots[$booking->status] ?? 'bg-gray-500' }}"></span>
                             {{ ucfirst($booking->status ?? 'pending') }}
                         </span>
@@ -204,7 +216,6 @@
                     $bookingStart = \Carbon\Carbon::parse($booking->start_date)->startOfDay();
                     $daysLeft = $today->diffInDays($bookingStart, false);
 
-                    // 🕒 TIME CONDITION: Check if current time is equal to or past the End Date at 9:00 PM (21:00)
                     $endDateWithTime = \Carbon\Carbon::parse($booking->end_date)->setTime(21, 0, 0);
                     $showReviewSystem = now()->greaterThanOrEqualTo($endDateWithTime) && $booking->status === 'approved';
                 @endphp

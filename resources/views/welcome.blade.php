@@ -237,7 +237,7 @@ transform:none;
                         @if(!empty($car->images) && is_array($car->images))
                             @foreach($car->images as $img)
                                 <div class="w-full h-full flex-shrink-0">
-                                    <img src="{{ asset('storage/' . $img) }}" class="w-full h-full object-cover transform scale-100 group-hover:scale-[1.04] transition-transform duration-700 ease-out">
+                                   <img src="/storage/{{ $img }}" class="w-full h-full object-cover transform scale-100 group-hover:scale-[1.04] transition-transform duration-700 ease-out">
                                 </div>
                             @endforeach
                         @else

@@ -45,67 +45,43 @@
 
 <div class="absolute w-96 h-96 bg-indigo-400 rounded-full blur-3xl opacity-10 top-0 left-0"></div>
 <div class="absolute w-96 h-96 bg-pink-300 rounded-full blur-3xl opacity-10 bottom-0 right-0"></div>
-<header class="sticky top-0 z-50 backdrop-blur-xl bg-white/60 border-b border-white/40">
-
+<header class="sticky top-0 z-50 backdrop-blur-xl bg-white/70 border-b border-slate-200/50">
     <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-
         <div>
-            <h1 class="text-3xl font-extrabold tracking-tight text-gray-900">
-                LUXURY GARAGE
-            </h1>
-            <p class="text-sm text-gray-500 mt-1">
-                Premium Vehicle Collection
-            </p>
+            <h1 class="text-2xl font-extrabold tracking-tight text-gray-900">LUXURY GARAGE</h1>
+            <p class="text-xs text-gray-400 font-medium tracking-wide uppercase mt-0.5">Premium Vehicle Collection</p>
         </div>
 
         <div class="flex items-center gap-4">
-            <a href="{{ route('cars.index') }}"
-               class="btn px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-pink-500 text-white font-semibold shadow-xl hover:shadow-2xl">
-               Vehicles
-            </a>
+            <a href="{{ route('cars.index') }}" class="btn px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-sm font-semibold shadow-sm hover:bg-slate-50">Vehicles</a>
+            <a href="{{ route('bookings.index') }}" class="btn px-5 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold shadow-sm hover:bg-slate-800">My Bookings</a>
 
-            <a href="{{ route('bookings.index') }}"
-               class="btn px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-pink-500 text-white font-semibold shadow-xl hover:shadow-2xl">
-                My Bookings
-            </a>
-
-            @if(auth()->user()?->role === 'admin')
-            <a href="{{ route('cars.create') }}"
-               class="btn px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-pink-500 text-white font-semibold shadow-xl hover:shadow-2xl">
-                + Add Vehicle
-            </a>
-             <a href="{{ route('dashboard') }}"
-               class="btn px-5 py-3 rounded-2xl bg-gray-900 text-white font-semibold shadow-xl hover:bg-gray-800 transition">
-                Dashboard
-            </a>
+            @if(auth()->check() && auth()->user()->role === 'admin')
+                <a href="{{ route('cars.create') }}" class="btn px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-pink-600 text-white text-sm font-semibold shadow-md hover:brightness-105">+ Add Vehicle</a>
+                <a href="{{ route('dashboard') }}" class="btn px-5 py-2.5 rounded-xl bg-slate-100 text-slate-800 text-sm font-semibold hover:bg-slate-200 transition">Dashboard</a>
             @endif
 
-            @auth
             <div class="relative group">
-                <a href="{{ route('profile.edit') }}"
-                   class="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white/60 hover:bg-white/90 shadow transition">
-                    <div class="w-9 h-9 rounded-full bg-gradient-to-r from-indigo-500 to-pink-500 flex items-center justify-center text-white font-bold">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl bg-white border border-slate-200/80 shadow-sm transition">
+                    <div class="w-7 h-7 rounded-lg bg-gradient-to-r from-indigo-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                        @if(auth()->check())
+                            {{ strtoupper(substr(auth()->user()->name,0,1)) }}
+                        @else
+                            U
+                        @endif
                     </div>
                 </a>
 
-                <div class="absolute right-0 mt-2 w-44 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <div class="bg-white/80 backdrop-blur-xl border border-white/40 rounded-2xl shadow-xl overflow-hidden">
-                        <a href="{{ route('profile.edit') }}"
-                           class="block px-4 py-3 text-sm text-gray-700 hover:bg-indigo-50">
-                            👤 My Profile
-                        </a>
-
+                <div class="absolute right-0 mt-2 w-44 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                    <div class="bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden">
+                        <a href="{{ route('profile.edit') }}" class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-slate-50">👤 My Profile</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button class="w-full text-left px-4 py-3 text-sm text-red-600 hover:bg-red-50">
-                                🚪 Logout
-                            </button>
+                            <button class="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">🚪 Logout</button>
                         </form>
                     </div>
                 </div>
             </div>
-            @endauth
         </div>
     </div>
 </header>

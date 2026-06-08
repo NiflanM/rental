@@ -148,4 +148,23 @@ class CarController extends Controller
 
         return back()->with('success', 'Vehicle status updated.');
     }
+    public function destroy($id)
+    {
+        // 1. Find the car or throw a 404 error if it doesn't exist
+        $car = Car::findOrFail($id);
+
+        // 2. Delete any associated images from physical storage if they exist
+        if (!empty($car->images)) {
+            foreach ($car->images as $path) {
+                Storage::disk('public')->delete($path);
+            }
+        }
+
+        // 3. Delete the car record from the database
+        $car->delete();
+
+        // 4. Redirect back to the index page with a success message
+        return redirect()->route('cars.index')
+            ->with('success', 'Car deleted successfully!');
+    }
 }

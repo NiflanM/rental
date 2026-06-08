@@ -159,7 +159,7 @@ transform:none;
                             name="location"
                             value="{{ request('location') }}"
                             list="db-pickup-locations" 
-                            placeholder="Type or click to select pickup yard..." 
+                            placeholder="Type or click to select pickup location..." 
                             class="w-full bg-slate-50 dark:bg-slate-950 text-sm pl-11 pr-4 py-4 rounded-xl border border-slate-100 dark:border-slate-800 focus:border-indigo-500 dark:focus:border-indigo-400 transition font-medium outline-none text-slate-800 dark:text-slate-200"
                         >
                         <datalist id="db-pickup-locations">
@@ -291,7 +291,7 @@ transform:none;
                     @if($car->pickup_address)
                     <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-950/40 px-3 py-2.5 rounded-xl border border-slate-100 dark:border-slate-800/40">
                         <i data-lucide="map-pin" class="w-4 h-4 text-indigo-500 flex-shrink-0"></i>
-                        <span class="truncate">Yard: {{ $car->pickup_address }}</span>
+                        <span class="truncate">Location: {{ $car->pickup_address }}</span>
                     </div>
                     @endif
                 </div>

@@ -68,7 +68,7 @@
         <nav class="space-y-2">
 
             {{-- DASHBOARD --}}
-            <a href="{{ route('dashboard') }}"
+            {{-- <a href="{{ route('dashboard') }}"
                class="nav-item group
                {{ request()->routeIs('dashboard') ? 'active' : '' }}">
 
@@ -80,7 +80,7 @@
                     Dashboard
                 </span>
 
-            </a>
+            </a> --}}
 
             {{-- VEHICLES --}}
             <a href="{{ route('cars.index') }}"

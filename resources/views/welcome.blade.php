@@ -5,7 +5,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Luxury Garage | Premium Vehicle Rental Marketplace</title>
+<title>Rentals.lk | Car Rental Sri Lanka | Self Drive & Car Hire</title>
+
+<meta name="description" content="Rent cars anywhere in Sri Lanka with Rentals.lk. Book self-drive cars, SUVs, luxury vehicles, vans and chauffeur-driven vehicles in Colombo, Kandy, Galle, Negombo and across Sri Lanka.">
+
+<meta name="keywords" content="Car Rental Sri Lanka, Rent a Car Colombo, Self Drive Car Rental Sri Lanka, Luxury Car Rental, SUV Rental Sri Lanka, Van Rental Sri Lanka">
+
+<meta name="author" content="Rentals.lk">
+
+<meta name="robots" content="index, follow">
+
+<meta property="og:description" content="Book self-drive and chauffeur-driven rental cars across Sri Lanka.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ url()->current() }}">
+<meta property="og:image" content="{{ asset('images/og-image.jpg') }}">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rentals.lk | Car Rental Sri Lanka">
+<meta name="twitter:description" content="Book rental cars anywhere in Sri Lanka."
+
+<link rel="canonical" href="{{ url()->current() }}">
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -93,7 +112,7 @@ transform:none;
 <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/20">
 <i data-lucide="compass" class="w-5 h-5"></i>
 </div>
-<span>LUXIRA<span class="text-indigo-600 dark:text-indigo-400 font-medium">GARAGE</span></span>
+<span><span class="text-indigo-600 dark:text-indigo-400 font-medium">Rentals.lk</span></span>
 </h1>
 
 <div class="flex gap-8 items-center font-semibold text-[14px]">
@@ -131,13 +150,13 @@ transform:none;
                 On-Demand Luxury. <br class="hidden sm:inline">No Showroom Lines.
             </h1>
 
-            <p class="text-base sm:text-xl text-slate-300 dark:text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed drop-shadow">
-                Instantly book real-time verified supercars, elite track editions, and chauffeured SUVs delivered directly to your location terminal.
+            <p class="text-base sm:text-lg text-slate-300 dark:text-slate-400 font-medium max-w-2xl mx-auto leading-relaxed drop-shadow">
+                Book affordable and luxury rental cars anywhere in Sri Lanka. Choose from self-drive cars, SUVs, sedans vehicles with easy online booking and transparent pricing.
             </p>
             
             <div class="pt-4 flex flex-wrap gap-4 justify-center">
                 <a href="{{ route('cars.index') }}" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-7 py-4 rounded-xl text-sm transition shadow-lg shadow-indigo-600/40 transform hover:-translate-y-0.5 duration-200">
-                    Explore Fleet Inventory <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    Browse Rental Cars <i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </a>
                 @guest
                     <a href="/register" class="inline-flex items-center gap-2 backdrop-blur-md bg-white/10 hover:bg-white/20 text-white border border-white/20 font-semibold px-7 py-4 rounded-xl text-sm transition transform hover:-translate-y-0.5 duration-200">
@@ -159,7 +178,7 @@ transform:none;
                             name="location"
                             value="{{ request('location') }}"
                             list="db-pickup-locations" 
-                            placeholder="Type or click to select pickup location..." 
+                            placeholder="Enter city (Colombo, Kandy, Galle...)" 
                             class="w-full bg-slate-50 dark:bg-slate-950 text-sm pl-11 pr-4 py-4 rounded-xl border border-slate-100 dark:border-slate-800 focus:border-indigo-500 dark:focus:border-indigo-400 transition font-medium outline-none text-slate-800 dark:text-slate-200"
                         >
                         <datalist id="db-pickup-locations">
@@ -206,10 +225,10 @@ transform:none;
 
             <div class="flex flex-wrap items-center gap-3 mt-6 pt-6 border-t border-slate-100 dark:border-slate-800/80 text-xs font-medium text-slate-500 dark:text-slate-400">
                 <span class="font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Quick Filters:</span>
-                <button type="button" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition">Convertibles</button>
-                <button type="button" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition">Track/Hypercars</button>
-                <button type="button" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition">Prestige SUVs</button>
-                <button type="button" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition">Electric Elite</button>
+                <button type="button" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition">Airport Pickup</button>
+                <button type="button" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition">Economy Cars</button>
+                <button type="button" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition">Luxury Cars</button>
+                <button type="button" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-800 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 transition">Self Drive</button>
             </div>
         </form>
 
@@ -376,14 +395,23 @@ transform:none;
 </section>
 
 <section class="max-w-6xl mx-auto px-6 py-16">
-<div class="grid md:grid-cols-4 gap-8 text-center">
-@foreach(['Luxury Cars','Happy Customers','Support','Secure Booking'] as $stat)
-<div class="glass p-8 rounded-3xl">
-<h3 class="text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">500+</h3>
-<p class="text-slate-400 text-xs font-semibold uppercase tracking-widest mt-1">{{ $stat }}</p>
-</div>
-@endforeach
-</div>
+    <div class="grid md:grid-cols-4 gap-8 text-center">
+        @php
+            $stats = [
+                'Vehicles'     => '150+',
+                'Happy Customers' => '100+',
+                'Support'         => '24/7',
+                'Secure Booking'  => '100%'
+            ];
+        @endphp
+
+        @foreach($stats as $label => $number)
+            <div class="glass p-8 rounded-3xl">
+                <h3 class="text-4xl font-extrabold text-indigo-600 dark:text-indigo-400">{{ $number }}</h3>
+                <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest mt-1">{{ $label }}</p>
+            </div>
+        @endforeach
+    </div>
 </section>
 
 <section id="pricing-guarantee" class="max-w-7xl mx-auto px-6 py-24 border-t border-slate-100 dark:border-slate-800/50">
@@ -423,8 +451,8 @@ transform:none;
 <section class="max-w-5xl mx-auto px-6 pb-32">
 <div class="bg-slate-900 dark:bg-slate-900/60 rounded-[2.5rem] p-16 text-center reveal border border-slate-800 relative overflow-hidden shadow-xl">
 <div class="relative z-10 space-y-4 max-w-xl mx-auto">
-<h2 class="text-4xl font-bold text-white tracking-tight">Ready To Drive Luxury?</h2>
-<p class="text-sm text-slate-400 leading-relaxed">Verification maps directly via biometric driver validation parameters. Finalize your credentials to choose your pick-up window details instantly.</p>
+<h2 class="text-4xl font-bold text-white tracking-tight">Ready to Rent a Car in Sri Lanka?</h2>
+<p class="text-sm text-slate-400 leading-relaxed">Book your rental car today and enjoy flexible pickup locations, affordable daily rates and reliable customer support across Sri Lanka.</p>
 <div class="pt-4">
     @guest
         <a href="/register" class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs tracking-wider uppercase px-8 py-3.5 rounded-xl transition shadow-md shadow-indigo-600/10"><i data-lucide="rocket" class="w-4 h-4"></i> Get Started </a>
@@ -436,19 +464,75 @@ transform:none;
 </div>
 </section>
 
-<footer class="bg-white dark:bg-[#080b12] border-t border-slate-100 dark:border-slate-900 text-xs text-slate-400 py-10 transition-colors">
-<div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
-    <div class="flex items-center gap-2 font-bold text-slate-800 dark:text-white">
-        <div class="w-6 h-6 rounded-md bg-indigo-600 flex items-center justify-center text-white text-[10px]">LG</div>
-        <span>LUXIRA GARAGE</span>
+<footer class="bg-slate-900 text-slate-400 text-xs py-16 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+        
+        <!-- Brand Info -->
+        <div class="lg:col-span-2 space-y-4">
+            <div class="flex items-center gap-2 font-bold text-white text-base">
+                <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs font-black">
+                    RL
+                </div>
+                <span>Rentals.lk</span>
+            </div>
+            <p class="text-slate-400 text-xs leading-relaxed max-w-sm">
+                Sri Lanka's trusted self-drive and luxury car rental network. Transparent pricing, instant online reservations, and reliable service island-wide.
+            </p>
+        </div>
+
+        <!-- Popular Locations -->
+        <div class="space-y-3">
+            <h4 class="text-white font-bold text-xs uppercase tracking-wider">Top Locations</h4>
+            <ul class="space-y-2.5 font-medium">
+                <li><a href="{{ route('cars.index', ['location' => 'Colombo']) }}" class="hover:text-indigo-400 transition">Car Rental Colombo</a></li>
+                <li><a href="{{ route('cars.index', ['location' => 'Kandy']) }}" class="hover:text-indigo-400 transition">Car Rental Kandy</a></li>
+                <li><a href="{{ route('cars.index', ['location' => 'Galle']) }}" class="hover:text-indigo-400 transition">Car Rental Galle</a></li>
+                <li><a href="{{ route('cars.index', ['location' => 'Negombo']) }}" class="hover:text-indigo-400 transition">Car Rental Negombo</a></li>
+                <li><a href="{{ route('cars.index', ['location' => 'Airport']) }}" class="hover:text-indigo-400 transition">Airport Car Rental</a></li>
+            </ul>
+        </div>
+
+        <!-- Vehicle Services -->
+        <div class="space-y-3">
+            <h4 class="text-white font-bold text-xs uppercase tracking-wider">Services</h4>
+            <ul class="space-y-2.5 font-medium">
+                <li><a href="{{ route('cars.index', ['type' => 'self-drive']) }}" class="hover:text-indigo-400 transition">Self Drive Cars</a></li>
+                <li><a href="{{ route('cars.index', ['type' => 'luxury']) }}" class="hover:text-indigo-400 transition">Luxury Car Hire</a></li>
+                <li><a href="#process" class="hover:text-indigo-400 transition">Rental Parameters</a></li>
+                <li><a href="#pricing-guarantee" class="hover:text-indigo-400 transition">Transparency Policy</a></li>
+            </ul>
+        </div>
+
+        <!-- Contact Us -->
+        <div class="space-y-3">
+            <h4 class="text-white font-bold text-xs uppercase tracking-wider">Contact Us</h4>
+            <ul class="space-y-2.5 font-medium">
+                <li class="flex items-center gap-2">
+                    <i data-lucide="phone" class="w-3.5 h-3.5 text-indigo-400"></i>
+                    <span>+94 77 123 4567</span>
+                </li>
+                <li class="flex items-center gap-2">
+                    <i data-lucide="mail" class="w-3.5 h-3.5 text-indigo-400"></i>
+                    <a href="mailto:info@rentals.lk" class="hover:text-indigo-400 transition">info@rentals.lk</a>
+                </li>
+                <li class="flex items-center gap-2">
+                    <i data-lucide="map-pin" class="w-3.5 h-3.5 text-indigo-400"></i>
+                    <span>Colombo, Sri Lanka</span>
+                </li>
+            </ul>
+        </div>
+
     </div>
-    <div class="flex flex-wrap justify-center gap-6 font-medium">
-        <a href="#" class="hover:text-indigo-500 transition">Rental Parameters</a>
-        <a href="#" class="hover:text-indigo-500 transition">Liability Insurance Policy</a>
-        <a href="#" class="hover:text-indigo-500 transition">Corporate Accounts</a>
+
+    <!-- Bottom Bar -->
+    <div class="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-slate-800/80 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-slate-500">
+        <div>© {{ date('Y') }} Rentals.lk Inc. All Rights Reserved.</div>
+        <div class="flex gap-6">
+            <a href="#" class="hover:text-slate-400 transition">Privacy Policy</a>
+            <a href="#" class="hover:text-slate-400 transition">Terms of Service</a>
+            <a href="#" class="hover:text-slate-400 transition">Insurance Policy</a>
+        </div>
     </div>
-    <div>© {{ date('Y') }} Luxira Garage Network Inc. All Rights Reserved.</div>
-</div>
 </footer>
 
 <script>
